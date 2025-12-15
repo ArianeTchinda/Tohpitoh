@@ -1,5 +1,3 @@
-# users/serializers.py
-
 from cProfile import label
 import attr
 from rest_framework.serializers import (
@@ -10,7 +8,7 @@ from rest_framework.serializers import (
 )
 from rest_framework.exceptions import ValidationError
 from django.contrib.auth.password_validation import validate_password
-from django.db import models # <-- CORRECTION DE L'ERREUR
+from django.db import models
 from users.models import User, PatientProfile, MedecinProfile, LaboProfile, AuditLog , ClinicalNote, Prescription, LabTest, AccessAuthorization
 
 
@@ -81,11 +79,18 @@ class UserRegisterSerializer(ModelSerializer):
 
     def create(self, validated_data):
         validated_data["userMail"] = validated_data["userMail"].lower()
+        
+        # *** CORRECTION CRITIQUE 1/4 ***
+        # Utiliser create_user pour hacher correctement le mot de passe
         password = validated_data.pop("password")
         validated_data.pop("password2")
-        user = User.objects.create(**validated_data)
-        user.set_password(password)
-        user.save()
+        
+        user = User.objects.create_user(
+            password=password, 
+            **validated_data
+        )
+        # Fin de la correction
+        
         return user
 
 
@@ -126,15 +131,23 @@ class PatientRegisterSerializer(UserRegisterSerializer):
         return super().validate(attrs)
 
     def create(self, validated_data):
+        # 1. Extraire les champs spécifiques au profil
         blood_group = validated_data.pop("userBloodGroup")
         genotype = validated_data.pop("userGenotype")
         diseases = validated_data.pop("userDiseases", None)
         allergies = validated_data.pop("userAllergies", None)
+        
+        # 2. Extraire et préparer les données d'utilisateur
+        validated_data["userMail"] = validated_data["userMail"].lower()
         password = validated_data.pop("password")
         validated_data.pop("password2")
-        user = User.objects.create(**validated_data)
-        user.set_password(password)
-        user.save()
+        
+        # *** CORRECTION CRITIQUE 2/4 ***
+        # Création de l'utilisateur de base (hachage du mot de passe inclus)
+        user = User.objects.create_user(password=password, **validated_data)
+        # Fin de la correction
+        
+        # 3. Création du profil patient
         PatientProfile.objects.create(
             user=user,
             userBloodGroup=blood_group,
@@ -153,13 +166,18 @@ class LaboRegisterSerializer(UserRegisterSerializer):
         return super().validate(attrs)
 
     def create(self, validated_data):
+        
+        # 1. Extraire et préparer les données d'utilisateur
+        validated_data["userMail"] = validated_data["userMail"].lower()
         password = validated_data.pop("password")
         validated_data.pop("password2")
 
-        user = User.objects.create(**validated_data)
-        user.set_password(password)
-        user.save()
-
+        # *** CORRECTION CRITIQUE 3/4 ***
+        # Création de l'utilisateur de base (hachage du mot de passe inclus)
+        user = User.objects.create_user(password=password, **validated_data)
+        # Fin de la correction
+        
+        # 2. Création du profil spécifique
         LaboProfile.objects.create(user=user)
 
         return user
@@ -176,15 +194,20 @@ class MedecinRegisterSerializer(UserRegisterSerializer):
         return super().validate(attrs)
 
     def create(self, validated_data):
+        # 1. Extraire les champs spécifiques au profil
         hospital = validated_data.pop("hospital", None)
 
+        # 2. Extraire et préparer les données d'utilisateur
+        validated_data["userMail"] = validated_data["userMail"].lower()
         password = validated_data.pop("password")
         validated_data.pop("password2")
 
-        user = User.objects.create(**validated_data)
-        user.set_password(password)
-        user.save()
+        # *** CORRECTION CRITIQUE 4/4 ***
+        # Création de l'utilisateur de base (hachage du mot de passe inclus)
+        user = User.objects.create_user(password=password, **validated_data)
+        # Fin de la correction
 
+        # 3. Création du profil spécifique
         MedecinProfile.objects.create(user=user, hospital=hospital)
 
         return user
