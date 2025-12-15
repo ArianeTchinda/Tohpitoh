@@ -1,0 +1,11 @@
+# Dossier de l'environnement virtuel
+.venv/
+.env/
+
+# Fichiers de cache Python
+__pycache__/
+*.pyc
+
+# Dossiers statiques et médias
+/staticfiles
+/media

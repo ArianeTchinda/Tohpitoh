@@ -1,0 +1,149 @@
+[
+  {
+    "model": "users.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$870000$Vp6uH9X8kL$a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0=",
+      "userMail": "admin@tohpitoh.com",
+      "userName": "SYSTEM",
+      "userForName": "Admin",
+      "userPhone": "600000000",
+      "userGender": "M",
+      "userAddress": "Direction Générale",
+      "userRole": "Admin",
+      "is_staff": true,
+      "is_superuser": true,
+      "is_active": true,
+      "created_at": "2025-12-12T10:00:00Z",
+      "updated_at": "2025-12-12T10:00:00Z"
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 2,
+    "fields": {
+      "password": "pbkdf2_sha256$870000$Vp6uH9X8kL$a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0=",
+      "userMail": "arianetchinda389@gmail.com",
+      "userName": "Tchinda",
+      "userForName": "Ariane",
+      "userPhone": "658087428",
+      "userGender": "F",
+      "userAddress": "Yaoundé, Cameroun",
+      "userRole": "Patient",
+      "is_active": true,
+      "created_at": "2025-12-12T10:00:00Z",
+      "updated_at": "2025-12-12T10:00:00Z"
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 3,
+    "fields": {
+      "password": "pbkdf2_sha256$870000$Vp6uH9X8kL$a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0=",
+      "userMail": "docteur.paul@tohpitoh.com",
+      "userName": "Kenfack",
+      "userForName": "Paul",
+      "userPhone": "677001122",
+      "userGender": "M",
+      "userAddress": "Douala",
+      "userRole": "Médecin",
+      "is_active": true,
+      "created_at": "2025-12-12T10:00:00Z",
+      "updated_at": "2025-12-12T10:00:00Z"
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 4,
+    "fields": {
+      "password": "pbkdf2_sha256$870000$Vp6uH9X8kL$a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0=",
+      "userMail": "labo.central@tohpitoh.com",
+      "userName": "BioLab",
+      "userForName": "Central",
+      "userPhone": "699001122",
+      "userGender": "M",
+      "userAddress": "Bafoussam",
+      "userRole": "Laboratoire",
+      "is_active": true,
+      "created_at": "2025-12-12T10:00:00Z",
+      "updated_at": "2025-12-12T10:00:00Z"
+    }
+  },
+  {
+    "model": "users.patientprofile",
+    "pk": 1,
+    "fields": {
+      "user": 2,
+      "userAllergies": "Arachides",
+      "userDiseases": "Aucune",
+      "userGenotype": "AA",
+      "userBloodGroup": "O+"
+    }
+  },
+  {
+    "model": "users.medecinprofile",
+    "pk": 1,
+    "fields": {
+      "user": 3,
+      "hospital": "Hôpital de Référence de Douala"
+    }
+  },
+  {
+    "model": "users.laboprofile",
+    "pk": 1,
+    "fields": {
+      "user": 4
+    }
+  },
+  {
+    "model": "users.clinicalnote",
+    "pk": 1,
+    "fields": {
+      "patient": 2,
+      "doctor": 3,
+      "tension_arterielle": "120/80",
+      "temperature": "37.2",
+      "poids": "65.00",
+      "observation": "Patient en forme, légère fatigue.",
+      "diagnostic": "Fatigue passagère",
+      "created_at": "2025-12-12T14:00:00Z"
+    }
+  },
+  {
+    "model": "users.prescription",
+    "pk": 1,
+    "fields": {
+      "patient": 2,
+      "doctor": 3,
+      "medication_details": "Vitamine C 1000mg : 1 comprimé/jour pendant 10 jours.",
+      "created_at": "2025-12-12T14:15:00Z"
+    }
+  },
+  {
+    "model": "users.labtest",
+    "pk": 1,
+    "fields": {
+      "patient": 2,
+      "prescribed_by": 3,
+      "performed_by": 4,
+      "test_name": "Glycémie à jeun",
+      "details": "Vérification du taux de sucre.",
+      "status": "Terminé",
+      "doctor_interpretation": "Taux normal.",
+      "interpreted_by": 3,
+      "created_at": "2025-12-12T15:00:00Z"
+    }
+  },
+  {
+    "model": "users.accessauthorization",
+    "pk": 1,
+    "fields": {
+      "patient": 2,
+      "professional": 3,
+      "granted_at": "2025-12-12T10:00:00Z",
+      "expires_at": "2026-12-12T10:00:00Z",
+      "is_active": true,
+      "is_emergency": false
+    }
+  }
+]
