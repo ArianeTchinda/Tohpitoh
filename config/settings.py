@@ -39,7 +39,7 @@ DEBUG = env('DEBUG')
 
 # Si DEBUG est False (production), ALLOWED_HOSTS doit être défini via l'environnement
 if not DEBUG:
-    # L'hôte de Render sera inclus ici
+    # L'hôte de Render sera inclus ici. On garde la configuration Render.
     ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['.render.com'])
     # Sécurité en production
     CSRF_TRUSTED_ORIGINS = ['https://*.render.com']
@@ -47,8 +47,10 @@ if not DEBUG:
     SECURE_SSL_REDIRECT = True
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 else:
-    # En développement
+    # En développement, on autorise tout
     ALLOWED_HOSTS = ["*"]
+    
+ 
 
 
 # Application definition
@@ -74,6 +76,7 @@ MIDDLEWARE = [
     # Whitenoise DOIT être après SecurityMiddleware
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    # CORS DOIT être avant CommonMiddleware
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -165,7 +168,7 @@ if not DEBUG:
     STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 
-# REST Framework, JWT, CORS, SPECTACULAR (inchangé, sauf CORS pour l'environnement)
+# REST Framework, JWT, CORS, SPECTACULAR
 
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
@@ -184,14 +187,22 @@ SIMPLE_JWT = {
 
 AUTH_USER_MODEL = "users.User"
 
-# CORS configuration
-CORS_ALLOW_ALL_ORIGINS = True # Peut être défini sur False en production par mesure de sécurité
-# CORS_ALLOWED_ORIGINS devrait inclure votre domaine Render en production si CORS_ALLOW_ALL_ORIGINS = False
+# -------------------------------------
+# 🚨 CONFIGURATION CORS MAXIMALE (Permet toutes les origines) 🚨
+# -------------------------------------
+# Permet toutes les requêtes d'où qu'elles viennent.
+CORS_ALLOW_ALL_ORIGINS = True 
+
+# Cette liste n'est techniquement plus nécessaire avec CORS_ALLOW_ALL_ORIGINS = True, 
+# mais la garder avec "null" offre une double assurance pour les appareils mobiles.
 CORS_ALLOWED_ORIGINS = [
-    "exp://10.39.131.206:8081", # Pour votre application Expo locale
-    # Ajoutez ici votre domaine Render (ex: "https://votre-projet.onrender.com")
+    # Assure que les requêtes mobiles (origine 'null') sont explicitement autorisées
+    "null", 
+    "https://tohpitoh-backend-s73y.onrender.com", 
+    "exp://192.168.184.206:8081",
 ]
 
+# Autoriser les en-têtes et les méthodes par défaut
 CORS_ALLOW_METHODS = [
     *default_methods,
 ]
@@ -199,6 +210,10 @@ CORS_ALLOW_METHODS = [
 CORS_ALLOW_HEADERS = [
     *default_headers,
 ]
+
+# Autoriser l'envoi de credentials (nécessaire si vous utilisez des cookies/sessions, 
+# bien que moins courant avec JWT)
+CORS_ALLOW_CREDENTIALS = True 
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "Tohpitoh Backend",
